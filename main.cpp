@@ -1,0 +1,123 @@
+#include <iostream>
+#include <string>
+
+#include "RBTreeDictionary.hpp"
+#include "ChainedHashDictionary.hpp"
+
+int main()
+{
+    //RBTREE
+
+    std::cout << "Teste - RBTreeDictionary\n";
+    std::cout << "-----------------------------\n";
+
+    RBTreeDictionary<std::string, int> rb;
+
+    rb.insert("maria", 10);
+    rb.insert("joao", 20);
+    rb.insert("ana", 30);
+    rb.insert("carlos", 40);
+
+    std::cout << "Tamanho: "
+              << rb.size()
+              << "\n";
+
+    std::cout << "Contem ana? "
+              << rb.contains("ana")
+              << "\n";
+
+    std::cout << "Contem pedro? "
+              << rb.contains("pedro")
+              << "\n";
+
+    std::cout << "Valor de joao: "
+              << rb.get("joao")
+              << "\n";
+
+    rb.update("joao", 99);
+
+    std::cout << "Novo valor de joao: "
+              << rb.get("joao")
+              << "\n";
+
+    std::cout << "Insercao duplicada (ana): "
+              << rb.insert("ana", 500)
+              << "\n";
+
+    rb.remove("carlos");
+
+    std::cout << "Contem carlos? "
+              << rb.contains("carlos")
+              << "\n";
+
+    std::cout << "\nElementos em ordem:\n";
+    rb.printInOrder();
+
+    std::cout << "\nEstrutura vazia? "
+              << rb.empty()
+              << "\n";
+
+    rb.clear();
+
+    std::cout << "Tamanho apos clear: "
+              << rb.size()
+              << "\n\n";
+
+
+
+    // HASH COM ENCADEAMENTO EXTERIOR
+
+    std::cout << "Teste - ChainedHashDictionary\n";
+    std::cout << "-----------------------------\n";
+
+    ChainedHashDictionary<std::string, int> hash;
+
+    hash.insert("livro", 100);
+    hash.insert("mesa", 200);
+    hash.insert("cadeira", 300);
+    hash.insert("janela", 400);
+
+    std::cout << "Tamanho: "
+              << hash.size()
+              << "\n";
+
+    std::cout << "Contem mesa? "
+              << hash.contains("mesa")
+              << "\n";
+
+    std::cout << "Contem porta? "
+              << hash.contains("porta")
+              << "\n";
+
+    std::cout << "Valor de cadeira: "
+              << hash.get("cadeira")
+              << "\n";
+
+    hash.update("cadeira", 999);
+
+    std::cout << "Novo valor de cadeira: "
+              << hash.get("cadeira")
+              << "\n";
+
+    std::cout << "Insercao duplicada (mesa): "
+              << hash.insert("mesa", 9999)
+              << "\n";
+
+    hash.remove("livro");
+
+    std::cout << "Contem livro? "
+              << hash.contains("livro")
+              << "\n";
+
+    std::cout << "Estrutura vazia? "
+              << hash.empty()
+              << "\n";
+
+    hash.clear();
+
+    std::cout << "Tamanho apos clear: "
+              << hash.size()
+              << "\n";
+
+    return 0;
+}
