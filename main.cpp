@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
-
+#include "AVLDictionary.hpp"
+#include "OpenAddressHashDictionary.hpp"
 #include "RBTreeDictionary.hpp"
 #include "ChainedHashDictionary.hpp"
 #include "Dictionary.hpp"
@@ -184,6 +185,118 @@ int main()
         << "Valor de teste: "
         << dict->get("teste")
         << "\n";
+
+
+
+    // AVL DICTIONARY
+
+    std::cout << "\nTeste - AVLDictionary\n";
+    std::cout << "-----------------------------\n";
+
+    AVLDictionary<std::string, int> avl;
+
+    avl.insert("maria", 10);
+    avl.insert("joao", 20);
+    avl.insert("ana", 30);
+    avl.insert("carlos", 40);
+
+    std::cout << "Tamanho: "
+              << avl.size()
+              << "\n";
+
+    std::cout << "Contem ana? "
+              << avl.contains("ana")
+              << "\n";
+
+    std::cout << "Contem pedro? "
+              << avl.contains("pedro")
+              << "\n";
+
+    std::cout << "Valor de joao: "
+              << avl.get("joao")
+              << "\n";
+
+    avl.update("joao", 99);
+
+    std::cout << "Novo valor de joao: "
+              << avl.get("joao")
+              << "\n";
+
+    std::cout << "Insercao duplicada (ana): "
+              << avl.insert("ana", 500)
+              << "\n";
+
+    avl.remove("carlos");
+
+    std::cout << "Contem carlos? "
+              << avl.contains("carlos")
+              << "\n";
+
+    std::cout << "Estrutura vazia? "
+              << avl.empty()
+              << "\n";
+
+    avl.clear();
+
+    std::cout << "Tamanho apos clear: "
+              << avl.size()
+              << "\n";
+
+
+    // HASH COM ENDERECAMENTO ABERTO
+
+    std::cout << "\nTeste - OpenAddressHashDictionary\n";
+    std::cout << "-----------------------------\n";
+
+    OpenAddressHashDictionary<std::string, int> openHash;
+
+    openHash.insert("livro", 100);
+    openHash.insert("mesa", 200);
+    openHash.insert("cadeira", 300);
+    openHash.insert("janela", 400);
+
+    std::cout << "Tamanho: "
+              << openHash.size()
+              << "\n";
+
+    std::cout << "Contem mesa? "
+              << openHash.contains("mesa")
+              << "\n";
+
+    std::cout << "Contem porta? "
+              << openHash.contains("porta")
+              << "\n";
+
+    std::cout << "Valor de cadeira: "
+              << openHash.get("cadeira")
+              << "\n";
+
+    openHash.update("cadeira", 999);
+
+    std::cout << "Novo valor de cadeira: "
+              << openHash.get("cadeira")
+              << "\n";
+
+    std::cout << "Insercao duplicada (mesa): "
+              << openHash.insert("mesa", 9999)
+              << "\n";
+
+    openHash.remove("livro");
+
+    std::cout << "Contem livro? "
+              << openHash.contains("livro")
+              << "\n";
+
+    std::cout << "Estrutura vazia? "
+              << openHash.empty()
+              << "\n";
+
+    openHash.clear();
+
+    std::cout << "Tamanho apos clear: "
+              << openHash.size()
+              << "\n";
+
 
     return 0;
 }

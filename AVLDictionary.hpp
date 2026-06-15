@@ -237,6 +237,7 @@ Node* insert(
     return node;
 }
 
+
 // Busca um nó pela chave.
 Node* findNode(
     Node* node,
@@ -541,7 +542,7 @@ public:
 
 // Adiciona um novo par chave-valor.
 // Retorna false caso a chave já exista.
-    bool add(
+    bool insert(
     const Key& key,
     const Value& value
 ) override {
@@ -556,6 +557,28 @@ public:
         );
 
     return m_inserted;
+}
+
+// Atualiza o valor associado a uma chave existente.
+// Retorna false caso a chave não seja encontrada.
+bool update(
+    const Key& key,
+    const Value& value
+) override {
+
+    Node* node =
+        findNode(
+            m_root,
+            key
+        );
+
+    if(node == nullptr) {
+        return false;
+    }
+
+    node->value = value;
+
+    return true;
 }
 
 // Remove uma chave da árvore.
@@ -603,7 +626,7 @@ bool contains(
 
 // Retorna o valor associado à chave.
 // Lança exceção caso a chave não exista.
-Value& at(
+Value& get(
     const Key& key
 ) override {
 
@@ -623,7 +646,7 @@ Value& at(
 }
 
 // Versão constante de acesso ao valor.
-const Value& at(
+const Value& get(
     const Key& key
 ) const override {
 
@@ -666,7 +689,7 @@ Value& operator[](
             key
         );
 
-    return at(key);
+    return get(key);
 }
 
 // Remove todos os elementos da árvore.

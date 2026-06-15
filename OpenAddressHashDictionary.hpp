@@ -101,7 +101,7 @@ private:
 
         if(entry.state == OCCUPIED) {
 
-            add(
+            insert(
                 entry.key,
                 entry.value
             );
@@ -124,7 +124,7 @@ public:
 }
 
 // Insere um novo elemento na tabela utilizando sondagem linear
-    bool add(
+    bool insert(
     const Key& key,
     const Value& value
 ) override {
@@ -253,7 +253,7 @@ bool update(
 }
 
 // Retorna uma referência para o valor associado à chave
-    Value& at(
+    Value& get(
     const Key& key
 ) override {
 
@@ -279,7 +279,7 @@ bool update(
 }
 
 // Retorna uma referência constante para o valor associado à chave
-    const Value& at(
+    const Value& get(
     const Key& key
 ) const override {
 
@@ -346,9 +346,9 @@ bool update(
         }
     }
 
-    add(key, Value());
+    insert(key, Value());
 
-    return at(key);
+    return get(key);
 }
 
 };
