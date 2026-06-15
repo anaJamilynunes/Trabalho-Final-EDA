@@ -3,6 +3,7 @@
 
 #include "RBTreeDictionary.hpp"
 #include "ChainedHashDictionary.hpp"
+#include "Dictionary.hpp"
 
 int main()
 {
@@ -65,7 +66,7 @@ int main()
 
 
 
-    // HASH COM ENCADEAMENTO EXTERIOR
+    //HASH COM ENCADEAMENTO EXTERIOR
 
     std::cout << "Teste - ChainedHashDictionary\n";
     std::cout << "-----------------------------\n";
@@ -118,6 +119,71 @@ int main()
     std::cout << "Tamanho apos clear: "
               << hash.size()
               << "\n";
+
+    //TESTE DE POLIMORFISMO
+
+    std::cout << "\nTeste - Polimorfismo\n";
+    std::cout << "-----------------------------\n";
+
+    Dictionary<std::string, int>* dict;
+
+    //Usando RBTree
+
+    RBTreeDictionary<std::string, int> rbPoly;
+
+    dict = &rbPoly;
+
+    dict->insert("A", 10);
+    dict->insert("B", 20);
+
+    std::cout
+        << "RBTree -> tamanho: "
+        << dict->size()
+        << "\n";
+
+    std::cout
+        << "RBTree -> valor de A: "
+        << dict->get("A")
+        << "\n";
+
+    //Usando Hash
+
+    ChainedHashDictionary<std::string, int> hashPoly;
+
+    dict = &hashPoly;
+
+    dict->insert("X", 100);
+    dict->insert("Y", 200);
+
+    std::cout
+        << "Hash -> tamanho: "
+        << dict->size()
+        << "\n";
+
+    std::cout
+        << "Hash -> valor de X: "
+        << dict->get("X")
+        << "\n";
+
+
+        dict = &rbPoly;
+
+    (*dict)["novo"] = 500;
+
+    std::cout
+        << "Valor de novo: "
+        << dict->get("novo")
+        << "\n";
+
+
+    dict = &hashPoly;
+
+    (*dict)["teste"] = 999;
+
+    std::cout
+        << "Valor de teste: "
+        << dict->get("teste")
+        << "\n";
 
     return 0;
 }

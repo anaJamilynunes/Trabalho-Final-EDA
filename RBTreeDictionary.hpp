@@ -5,9 +5,11 @@
 #include <iostream>
 #include <stdexcept>
 #include "RBNode.hpp"
+#include "Dictionary.hpp"
 
 template<typename Key, typename Value>
-class RBTreeDictionary
+class RBTreeDictionary :
+    public Dictionary<Key, Value>
 {
 private:
 
@@ -45,7 +47,7 @@ private:
 public:
 
     //construtor: inicializa a raiz com o nil
-    RBTreeDictionary();
+    RBTreeDictionary() ;
 
     //destrutor: irá chamar a clear()
     ~RBTreeDictionary();
@@ -53,46 +55,46 @@ public:
     bool insert(
         const Key& key,
         const Value& value
-    );
+    ) override;
 
     bool remove(
         const Key& key
-    );
+    ) override;
 
     //bool: verifica a existencia de uma chave
     bool contains(
         const Key& key
-    ) const;
+    ) const override;
 
     //busca o valor de uma chave
     //se nao existir lança uma exceção
     Value& get(
     const Key& key
-    );
+    ) override;
 
     const Value& get(
         const Key& key
-    ) const;
+    ) const override;
 
     //bool: atualiza uma chave
     bool update(
         const Key& key,
         const Value& value
-    );
+    ) override;
 
     //percorre a arvore usando pilha para liberar a memória alocada
-    void clear();
+    void clear() override;
 
     //retorna a qtd de elementos
-    size_t size() const;
+    size_t size() const override;
 
     //verifica se a arvore está vazia
-    bool empty() const;
+    bool empty() const override;
 
     //permite a inserção dinâmica
     Value& operator[](
         const Key& key
-    );
+    ) override;
 
     //percorre em order crescente e imprime as chaves, cores e nós
     void printInOrder();
