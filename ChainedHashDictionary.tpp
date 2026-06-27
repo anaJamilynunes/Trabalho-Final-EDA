@@ -35,6 +35,9 @@ ChainedHashDictionary<Key, Value>::ChainedHashDictionary(
 
     //tabela recém criada e vazia, posições apontam para null 
     elementCount = 0;
+
+    comparisons = 0;
+    collisions = 0;
 }
 
 template<typename Key, typename Value>
@@ -76,6 +79,8 @@ bool ChainedHashDictionary<Key, Value>::contains(
 
     //enquanto existir nó ele irá buscar
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             return true;
         }
@@ -101,6 +106,8 @@ ChainedHashDictionary<Key, Value>::get(
         table[index];
 
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             //se for encontrada retorna a referencia
             return current->value;
@@ -127,6 +134,8 @@ ChainedHashDictionary<Key, Value>::get(
         table[index];
 
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             return current->value;
         }
@@ -153,6 +162,10 @@ bool ChainedHashDictionary<Key, Value>::insert(
     }
 
     size_t index = hash(key); //posição inicial
+
+    if(table[index] != nullptr) {
+        collisions++;
+    }
 
     //criando o novo nó
     ChainHashNode<Key, Value>* newNode =
@@ -183,6 +196,8 @@ bool ChainedHashDictionary<Key, Value>::update(
         table[index];
 
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             //e entao o novo valor será guardado
             current->value = value;
@@ -213,6 +228,8 @@ bool ChainedHashDictionary<Key, Value>::remove(
         nullptr;
 
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             //se null, significa que o nó a ser removido é o primeiro da lista
             //entao a cabeça deve ser atualizada
@@ -283,16 +300,97 @@ ChainedHashDictionary<Key, Value>::operator[](
         table[index];
 
     while(current != nullptr) {
+        comparisons++;
+
         if(current->key == key) {
             return current->value;
         }
 
         current = current->next;
-    }
+}
 
     //chama o insert, caso a chave nao for encontrada
     insert(key, Value());
 
     //retorna o valor associado 
     return get(key);
+}
+
+//metricas
+template<typename K, typename V>
+long long
+ChainedHashDictionary<K,V>::getComparisons() const {
+    return comparisons;
+}
+
+template<typename K, typename V>
+long long
+ChainedHashDictionary<K,V>::getCollisions() const {
+    return collisions;
+}
+
+//indica quantos elementos existem por posição da tabela
+template<typename Key, typename Value>
+double
+ChainedHashDictionary<Key,Value>::
+getLoadFactor() const
+{
+    //razão entre o número total de elementos e a capacidade da tabela
+    return
+        static_cast<double>(elementCount)/capacity;
+}
+
+//para encontrar qual é a maior lista encadeada ou maior número de colisões em uma única posição
+template<typename Key, typename Value>
+size_t
+ChainedHashDictionary<Key,Value>::
+getLargestChain() const
+{
+    //aux p/ armazenar o atual maior tam de lista 
+    size_t max = 0;
+
+    //percorre todas as posições da hash
+    for(size_t i=0;i<capacity;i++) {
+        //e guardamos quantos nós existem na lista encadeada
+        size_t current = 0;
+
+        ChainHashNode<Key,Value>* ptr =
+            table[i];
+
+        //laço para fazer a contagem
+        while(ptr != nullptr) {
+            current++;
+            ptr = ptr->next;
+        }
+
+        //e se a lista no i for maior atualiza
+        if(current > max) {
+            max = current;
+        }
+    }
+
+    return max;
+}
+
+template<typename Key, typename Value>
+void
+ChainedHashDictionary<Key,Value>::
+printVocabulary() const
+{
+    for(size_t i=0;i<capacity;i++)
+    {
+        ChainHashNode<Key,Value>* current =
+            table[i];
+
+        while(current != nullptr)
+        {
+            std::cout
+                << current->key
+                << " -> "
+                << current->value
+                << '\n';
+
+            current = current->next;
+        }
+    }
 }

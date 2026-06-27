@@ -1,0 +1,5 @@
+— bom dia
+- ola mundo
+mostra-lo
+bem-vindo
+segunda-feira

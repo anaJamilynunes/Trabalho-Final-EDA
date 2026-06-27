@@ -27,6 +27,9 @@ private:
         const Key& key
     ) const;
 
+    mutable long long comparisons;
+    mutable long long collisions;
+
 public:
 
     //construtor: cria a hash vazia
@@ -84,6 +87,18 @@ public:
     Value& operator[](
         const Key& key
     ) override;
+
+    //metricas
+    long long getComparisons() const;
+    long long getCollisions() const;
+
+    //indica quantos elementos existem por posição da tabela
+    double getLoadFactor() const;
+    //para encontrar qual é a maior lista encadeada ou maior número de colisões em uma única posição
+    size_t getLargestChain() const;
+
+    //impressao do vocabulario
+    void printVocabulary() const;
 };
 
 #include "ChainedHashDictionary.tpp"
