@@ -20,6 +20,11 @@ RBTreeDictionary<Key, Value>::RBTreeDictionary()
     root = NIL; //a raiz recebera o nil
 
     nodeCount = 0; //quant de elementos armazenados 
+
+    //inicializando as metricas
+    comparisons = 0;
+    rotations = 0;
+    recolorings = 0;
 }
 
 template<typename Key, typename Value>
@@ -41,10 +46,12 @@ RBTreeDictionary<Key, Value>::searchNode(
     RBNode<Key, Value>* current = root; //recebe a raiz
 
     while(current != NIL) {
+        comparisons++;
         if(key == current->key) {
             return current;
         }
 
+        comparisons++;
         if(key < current->key) {
             current = current->left;
         } else {
@@ -70,6 +77,7 @@ void RBTreeDictionary<Key, Value>::leftRotate(
     RBNode<Key, Value>* x
 )
 {   //rotação left
+    rotations++;
     RBNode<Key, Value>* y = x->right;
 
     x->right = y->left;
@@ -98,6 +106,7 @@ void RBTreeDictionary<Key, Value>::rightRotate(
     RBNode<Key, Value>* y
 )
 { //rotação right
+    rotations++;
     RBNode<Key, Value>* x = y->left;
 
     y->left = x->right;
@@ -143,14 +152,19 @@ bool RBTreeDictionary<Key, Value>::insert(
     //verificar se isso acontece:
     while(x != NIL) {
         y = x;
-
+        
+        comparisons++;
         if(key < x->key) {
             x = x->left;
-        } else if(key > x->key) {
-            x = x->right;
         } else {
-            delete z;
-            return false;
+            comparisons++;      // key >
+
+            if(key > x->key) {
+                x = x->right;
+            } else {
+                delete z;
+                return false;
+            }
         }
     }
 
@@ -194,6 +208,7 @@ void RBTreeDictionary<Key, Value>::insertFixup(
                 z->parent->color = BLACK;
                 y->color = BLACK;
                 z->parent->parent->color = RED;
+                recolorings += 3;
 
                 z = z->parent->parent;
             } else { //caso "zig-zag"
@@ -206,6 +221,7 @@ void RBTreeDictionary<Key, Value>::insertFixup(
                 z->parent->color = BLACK;
 
                 z->parent->parent->color = RED;
+                recolorings += 2;
 
                 rightRotate(
                     z->parent->parent
@@ -220,6 +236,7 @@ void RBTreeDictionary<Key, Value>::insertFixup(
                     y->color = BLACK;
                     z->parent->parent->color = RED;
                     z = z->parent->parent;
+                    recolorings += 3;
                 } else { //caso 2 e 3: tio é preto
                     if (z == z->parent->left) { //se "zig-zag" z é filho esq
                         z = z->parent;
@@ -228,13 +245,17 @@ void RBTreeDictionary<Key, Value>::insertFixup(
                     //caso 3: "linha" z é filho dir
                     z->parent->color = BLACK;
                     z->parent->parent->color = RED;
+                    recolorings += 2;
                     leftRotate(z->parent->parent);
                 }
         }
     }
 
     //recolore a raiz
-    root->color = BLACK;
+    if(root->color != BLACK) {
+        root->color = BLACK;
+        recolorings++;
+    }
 }
 
 template<typename Key, typename Value>
@@ -317,10 +338,9 @@ void RBTreeDictionary<Key, Value>::deleteFixup(
             if(w->color == RED) { //caso 1: w = irmao do nó
                 w->color = BLACK;
                 x->parent->color = RED;
+                recolorings += 2;
 
-                leftRotate(
-                    x->parent
-                );
+                leftRotate(x->parent);
 
                 w = x->parent->right;
             }
@@ -328,6 +348,7 @@ void RBTreeDictionary<Key, Value>::deleteFixup(
             if(w->left->color == BLACK && w->right->color == BLACK) { 
                 //caso 2: w e seus dois filhos sao black
                 w->color = RED;
+                recolorings++;
 
                 x = x->parent;
             } else { //filhos de w tem cores !=
@@ -338,19 +359,19 @@ void RBTreeDictionary<Key, Value>::deleteFixup(
                     w->color = RED;
 
                     rightRotate(w);
+                    recolorings += 2;
 
                     w = x->parent->right;
                 }
                 
                 //caso 4: filho dir é red
-                w->color =
-                    x->parent->color;
+                w->color = x->parent->color;
 
-                x->parent->color =
-                    BLACK;
+                x->parent->color = BLACK;
+                recolorings++;
 
-                w->right->color =
-                    BLACK;
+                w->right->color = BLACK;
+                recolorings++;
 
                 leftRotate(
                     x->parent
@@ -366,29 +387,40 @@ void RBTreeDictionary<Key, Value>::deleteFixup(
                 w->color = BLACK;
                 x->parent->color = RED;
                 rightRotate(x->parent);
+                recolorings += 2;
+
                 w = x->parent->left;
             }
             
             if (w->right->color == BLACK && w->left->color == BLACK) {
                 w->color = RED;
+                recolorings++;
+
                 x = x->parent;
             } else {
                 if (w->left->color == BLACK) {
                     w->right->color = BLACK;
                     w->color = RED;
                     leftRotate(w);
+                    recolorings  += 2;
+
                     w = x->parent->left;
                 }
                 w->color = x->parent->color;
                 x->parent->color = BLACK;
                 w->left->color = BLACK;
                 rightRotate(x->parent);
+                recolorings += 2;
+
                 x = root;
             }
         }
     }
 
-    x->color = BLACK;
+    if(x->color != BLACK) {
+        x->color = BLACK;
+        recolorings++;
+    }
 }
 
 //remove todos os elementos
@@ -548,4 +580,52 @@ RBTreeDictionary<Key, Value>::operator[](
     return node->value;
 }
 
+template<typename Key, typename Value>
+long long RBTreeDictionary<Key, Value>::getComparisons() const
+{
+    return comparisons;
+}
 
+template<typename Key, typename Value>
+long long RBTreeDictionary<Key, Value>::getRotations() const
+{
+    return rotations;
+}
+
+template<typename Key, typename Value>
+long long RBTreeDictionary<Key, Value>::getRecolorings() const
+{
+    return recolorings;
+}
+
+template<typename Key, typename Value>
+void
+RBTreeDictionary<Key,Value>::
+printVocabulary() const
+{
+    printVocabulary(root);
+}
+
+//função recursiva
+template<typename Key, typename Value>
+void
+RBTreeDictionary<Key,Value>::
+printVocabulary(
+    RBNode<Key,Value>* node
+) const
+{
+    if(node == NIL)
+    {
+        return;
+    }
+
+    printVocabulary(node->left);
+
+    std::cout
+        << node->key
+        << " -> "
+        << node->value
+        << '\n';
+
+    printVocabulary(node->right);
+}

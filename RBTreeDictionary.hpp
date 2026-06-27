@@ -43,6 +43,16 @@ private:
     ) const;
 
     void printInOrder(RBNode<Key, Value>* node);
+
+    //metricas
+    mutable long long comparisons;
+    mutable long long rotations;
+    mutable long long recolorings;
+
+    //imprimir vocabulario
+    void printVocabulary(
+        RBNode<Key,Value>* node
+    ) const;
     
 public:
 
@@ -99,7 +109,14 @@ public:
     //percorre em order crescente e imprime as chaves, cores e nós
     void printInOrder();
 
+    //metricas
+    long long getComparisons() const;
 
+    long long getRotations() const;
+
+    long long getRecolorings() const;
+
+    void printVocabulary() const;
 };
 
 #include "RBTreeDictionary.tpp"
