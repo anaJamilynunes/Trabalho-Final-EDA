@@ -319,12 +319,14 @@ ChainedHashDictionary<Key, Value>::operator[](
 }
 
 //metricas
+//retorna o contador global de comparações de chaves
 template<typename K, typename V>
 long long
 ChainedHashDictionary<K,V>::getComparisons() const {
     return comparisons;
 }
 
+//retorna o número total de colisões registradas
 template<typename K, typename V>
 long long
 ChainedHashDictionary<K,V>::getCollisions() const {
@@ -374,22 +376,21 @@ getLargestChain() const
     return max;
 }
 
+//ordenação - as chaves ficam espalhadas
 template<typename Key, typename Value>
 std::vector<Key>
 ChainedHashDictionary<Key,Value>::
 getKeys() const
 {
-    std::vector<Key> keys;
+    std::vector<Key> keys; //criar um vetor para acumular todas as chaves encontradas na tabela
 
-    for(size_t i=0;
-        i<capacity;
-        i++)
-    {
+    //todas as posições do vetor e todas as listas sao varridas
+    //a chave de cada nó (current->key) e jogando-a para dentro do vetor usando o keys.push_back
+    for(size_t i=0; i<capacity; i++) { 
         ChainHashNode<Key,Value>* current =
             table[i];
 
-        while(current != nullptr)
-        {
+        while(current != nullptr) {
             keys.push_back(
                 current->key
             );
@@ -399,6 +400,8 @@ getKeys() const
         }
     }
 
+    //por fim, o veotr é organizado em 
+    //ordem alfabética crescente
     std::sort(
         keys.begin(),
         keys.end()

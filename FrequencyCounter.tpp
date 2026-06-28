@@ -8,19 +8,21 @@ void FrequencyCounter<DictionaryType>::build(
         DictionaryType& dictionary,
         const std::vector<std::string>& words)
 {
-    for(const auto& word : words)
-    {
-        if(dictionary.contains(word))
-        {
+    //iremos percorrer o vetor
+    for(const auto& word : words) {
+
+    //verifica se a palavra atual já foi inserida no dicionário antes
+    //busca a frequencia atual e 
+    //atualiza o resgistro
+    //se nao, será inserida com frequência inicial como 1
+        if(dictionary.contains(word)) {
             int frequency =
                 dictionary.get(word);
 
             dictionary.update(
                 word,
                 frequency + 1);
-        }
-        else
-        {
+        } else {
             dictionary.insert(
                 word,
                 1);

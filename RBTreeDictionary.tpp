@@ -580,24 +580,28 @@ RBTreeDictionary<Key, Value>::operator[](
     return node->value;
 }
 
+//retorna a quantidade total de comparações de chaves
 template<typename Key, typename Value>
 long long RBTreeDictionary<Key, Value>::getComparisons() const
 {
     return comparisons;
 }
 
+//retorna o número total de rotações
 template<typename Key, typename Value>
 long long RBTreeDictionary<Key, Value>::getRotations() const
 {
     return rotations;
 }
 
+//retorna o número de vezes que os nós da árvore mudaram de cor
 template<typename Key, typename Value>
 long long RBTreeDictionary<Key, Value>::getRecolorings() const
 {
     return recolorings;
 }
 
+//ira fazer o percurso Em Ordem crescente das chaves
 template<typename Key, typename Value>
 void
 RBTreeDictionary<Key,Value>::collectKeys(
@@ -605,24 +609,37 @@ RBTreeDictionary<Key,Value>::collectKeys(
     std::vector<Key>& keys
 ) const
 {
-    if(node == NIL)
-        return;
+    if(node == NIL) //verifica se é folha
+        return;   //e retorna para o nó anterior
 
+    //por recursão, irá descer para a subárvore à esquerda do nó atual
+    //até achar o menor valor possível daquela ramificação
     collectKeys(
         node->left,
         keys
     );
 
+    //quando não houver mais nada à esquerda, a linha atual é executada
+    //e entao o nó atual é inserido no final do vetor key
     keys.push_back(
         node->key
     );
 
+    //por fim, o programa dispara a recursão para o nó à
+    //direita daquele elemento, 
+    //repetindo o processo e subindo novamente
     collectKeys(
         node->right,
         keys
     );
 }
 
+//interface
+//cria um vetor vazio chamado keys
+//chama a função auxiliar collectKeys, 
+//passando a raiz da árvore
+//e o vetor a ser preenchido e 
+//por fim retornado
 template<typename Key, typename Value>
 std::vector<Key>
 RBTreeDictionary<Key,Value>::getKeys() const

@@ -7,7 +7,7 @@
 class TextProcessor
 {
 public:
-
+ 
     static std::vector<std::string>
     extractWords(const std::string& filename);
 
