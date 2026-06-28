@@ -600,32 +600,39 @@ long long RBTreeDictionary<Key, Value>::getRecolorings() const
 
 template<typename Key, typename Value>
 void
-RBTreeDictionary<Key,Value>::
-printVocabulary() const
-{
-    printVocabulary(root);
-}
-
-//função recursiva
-template<typename Key, typename Value>
-void
-RBTreeDictionary<Key,Value>::
-printVocabulary(
-    RBNode<Key,Value>* node
+RBTreeDictionary<Key,Value>::collectKeys(
+    RBNode<Key,Value>* node,
+    std::vector<Key>& keys
 ) const
 {
     if(node == NIL)
-    {
         return;
-    }
 
-    printVocabulary(node->left);
+    collectKeys(
+        node->left,
+        keys
+    );
 
-    std::cout
-        << node->key
-        << " -> "
-        << node->value
-        << '\n';
+    keys.push_back(
+        node->key
+    );
 
-    printVocabulary(node->right);
+    collectKeys(
+        node->right,
+        keys
+    );
+}
+
+template<typename Key, typename Value>
+std::vector<Key>
+RBTreeDictionary<Key,Value>::getKeys() const
+{
+    std::vector<Key> keys;
+
+    collectKeys(
+        root,
+        keys
+    );
+
+    return keys;
 }

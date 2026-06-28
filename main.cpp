@@ -8,6 +8,7 @@
 #include "FrequencyCounter.hpp"
 #include "rbtreeDictionary.hpp"
 #include "chainedHashDictionary.hpp"
+#include "Dictionary.hpp"
 
 using namespace std;
 
@@ -68,18 +69,15 @@ int main(int argc, char* argv[])
          << words.size()
          << endl;
 
-    cout << "\nPALAVRAS EXTRAIDAS:\n";
-
-    for(auto& w : words)
-    {
-        cout << "[" << w << "]\n";
-    }
-
     // ARQUIVO DE RESULTADOS
 
     ofstream out(
         "results.csv",
         ios::app
+    );
+
+    ofstream vocab(
+        "vocabulario.csv"
     );
 
     // RBTREE
@@ -102,6 +100,17 @@ int main(int argc, char* argv[])
         >::build(
             dictionary,
             words);
+
+        vector<string> keys =
+            dictionary.getKeys();
+
+        for(const auto& key : keys) {
+            vocab
+                << key
+                << ","
+                << dictionary.get(key)
+                << "\n";
+}
 
         auto end =
             chrono::high_resolution_clock::now();
@@ -145,8 +154,6 @@ int main(int argc, char* argv[])
             << dictionary.getRecolorings()
             << "\n";
 
-        cout << "\nVOCABULARIO:\n";
-        dictionary.printVocabulary();
     }
 
     // HASH ENCADEADA
@@ -170,6 +177,17 @@ int main(int argc, char* argv[])
         >::build(
             dictionary,
             words);
+
+        vector<string> keys =
+            dictionary.getKeys();
+
+        for(const auto& key : keys) {
+            vocab
+                << key
+                << ","
+                << dictionary.get(key)
+                << "\n";
+        }
 
         auto end =
             chrono::high_resolution_clock::now();
@@ -218,8 +236,6 @@ int main(int argc, char* argv[])
             << dictionary.getLargestChain()
             << "\n";
         
-        cout << "\nVOCABULARIO:\n";
-        dictionary.printVocabulary();
     }
 
     else

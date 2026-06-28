@@ -44,6 +44,8 @@ public:
     ) = 0;
 
     virtual ~Dictionary() {}
+
+    virtual std::vector<Key> getKeys() const = 0;
 };
 
 #endif

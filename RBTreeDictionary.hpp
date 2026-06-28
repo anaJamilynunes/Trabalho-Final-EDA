@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 #include "RBNode.hpp"
 #include "Dictionary.hpp"
 
@@ -48,12 +49,13 @@ private:
     mutable long long comparisons;
     mutable long long rotations;
     mutable long long recolorings;
-
-    //imprimir vocabulario
-    void printVocabulary(
-        RBNode<Key,Value>* node
-    ) const;
     
+    //para coletar as chaves recursivamente
+    void collectKeys(
+        RBNode<Key,Value>* node,
+        std::vector<Key>& keys
+    ) const;
+
 public:
 
     //construtor: inicializa a raiz com o nil
@@ -116,7 +118,8 @@ public:
 
     long long getRecolorings() const;
 
-    void printVocabulary() const;
+    //retorna o vetor das chaves
+    std::vector<Key> getKeys() const override;
 };
 
 #include "RBTreeDictionary.tpp"

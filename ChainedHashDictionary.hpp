@@ -97,8 +97,7 @@ public:
     //para encontrar qual é a maior lista encadeada ou maior número de colisões em uma única posição
     size_t getLargestChain() const;
 
-    //impressao do vocabulario
-    void printVocabulary() const;
+    std::vector<Key>getKeys() const override;
 };
 
 #include "ChainedHashDictionary.tpp"

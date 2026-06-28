@@ -1,6 +1,8 @@
 #include <functional>
 #include <cstddef>
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include "ChainHashNode.hpp"
 
 //irá transforma uma chave em uma posição válida da tabela.
@@ -373,24 +375,34 @@ getLargestChain() const
 }
 
 template<typename Key, typename Value>
-void
+std::vector<Key>
 ChainedHashDictionary<Key,Value>::
-printVocabulary() const
+getKeys() const
 {
-    for(size_t i=0;i<capacity;i++)
+    std::vector<Key> keys;
+
+    for(size_t i=0;
+        i<capacity;
+        i++)
     {
         ChainHashNode<Key,Value>* current =
             table[i];
 
         while(current != nullptr)
         {
-            std::cout
-                << current->key
-                << " -> "
-                << current->value
-                << '\n';
+            keys.push_back(
+                current->key
+            );
 
-            current = current->next;
+            current =
+                current->next;
         }
     }
+
+    std::sort(
+        keys.begin(),
+        keys.end()
+    );
+
+    return keys;
 }
