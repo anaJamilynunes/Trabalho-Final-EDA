@@ -6,17 +6,26 @@
 
 #include "TextProcessor.hpp"
 #include "FrequencyCounter.hpp"
+#include "Dictionary.hpp"
+
+// O SEU EXPORTADOR COMPONENTE DE AUTORIA DA NOEMI
+#include "CSVExporter.hpp"
+
+// Inclusão das estruturas da sua amiga
 #include "rbtreeDictionary.hpp"
 #include "chainedHashDictionary.hpp"
-#include "Dictionary.hpp"
+
+// Inclusão das SUAS estruturas
+#include "AVLDictionary.hpp"
+#include "OpenAddressHashDictionary.hpp"
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
-
-//HELP
-
+    // ==================================================
+    // HELP
+    // ==================================================
     if(argc == 2)
     {
         string arg = argv[1];
@@ -26,22 +35,23 @@ int main(int argc, char* argv[])
             cout << "Uso:\n\n";
 
             cout << ".\\freq.exe rbtree livro.txt\n";
-            cout << ".\\freq.exe rbtree testePontuacao.txt\n";
-            cout << ".\\freq.exe rbtree testeHifen.txt\n";
             cout << ".\\freq.exe chained livro.txt\n";
-            cout << ".\\freq.exe chained testePontuacao.txt\n";
-            cout << ".\\freq.exe chained testeHifen.txt\n";
+            cout << ".\\freq.exe avl livro.txt\n";
+            cout << ".\\freq.exe open livro.txt\n";
 
-            cout << "Estrturas disponíveis:\n";
-            cout << "  rbtree\n";
-            cout << "  chained\n\n";
+            cout << "\nEstruturas disponiveis:\n";
+            cout << "  rbtree  (Arvore Rubro-Negra)\n";
+            cout << "  chained (Hash de Encadeamento)\n";
+            cout << "  avl     (Arvore AVL)\n";
+            cout << "  open    (Hash Enderecamento Aberto)\n\n";
 
             return 0;
         }
     }
 
+    // ==================================================
     // VALIDACAO DOS ARGUMENTOS
-
+    // ==================================================
     if(argc != 3)
     {
         cout << "\nNumero invalido de argumentos.\n";
@@ -53,11 +63,10 @@ int main(int argc, char* argv[])
     string structure = argv[1];
     string filename  = argv[2];
 
+    // ==================================================
     // EXTRAÇÃO DAS PALAVRAS
-
-    vector<string> words =
-        TextProcessor::extractWords(
-            filename);
+    // ==================================================
+    vector<string> words = TextProcessor::extractWords(filename);
 
     if(words.empty())
     {
@@ -65,179 +74,128 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    cout << "\nTOTAL EXTRAIDO = "
-         << words.size()
-         << endl;
+    cout << "\nTOTAL EXTRAIDO = " << words.size() << endl;
 
-    // ARQUIVO DE RESULTADOS
+    // ==================================================
+    // ARQUIVO DE RESULTADOS GERAIS
+    // ==================================================
+    ofstream out("results.csv", ios::app);
 
-    ofstream out(
-        "results.csv",
-        ios::app
-    );
-
-    ofstream vocab(
-        "vocabulario.csv"
-    );
-
-    // RBTREE
-
+    // ==================================================
+    // 1. RBTREE
+    // ==================================================
     if(structure == "rbtree")
     {
-        RBTreeDictionary<
-            string,
-            int
-        > dictionary;
+        RBTreeDictionary<string, int> dictionary;
 
-        auto start =
-            chrono::high_resolution_clock::now();
+        auto start = chrono::high_resolution_clock::now();
+        FrequencyCounter<RBTreeDictionary<string, int>>::build(dictionary, words);
 
-        FrequencyCounter<
-            RBTreeDictionary<
-                string,
-                int
-            >
-        >::build(
-            dictionary,
-            words);
+        // CHAMADA DO SEU EXPORTADOR: Árvores não precisam ordenar (false)
+        CSVExporter<string, int>::exportVocabulary(dictionary, "vocabulario.csv", false);
 
-        vector<string> keys =
-            dictionary.getKeys();
-
-        for(const auto& key : keys) {
-            vocab
-                << key
-                << ","
-                << dictionary.get(key)
-                << "\n";
-}
-
-        auto end =
-            chrono::high_resolution_clock::now();
-
-        auto duration =
-            chrono::duration_cast
-            <
-                chrono::milliseconds
-            >(end - start);
+        auto end = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 
         cout << "\nRBTree criada.\n";
-
         cout << "\n===== ESTATISTICAS RBTREE =====\n";
+        cout << "Palavras distintas: " << dictionary.size() << endl;
+        cout << "Tempo: " << duration.count() << " ms\n";
+        cout << "Comparacoes: " << dictionary.getComparisons() << endl;
+        cout << "Rotacoes: " << dictionary.getRotations() << endl;
+        cout << "Recoloracoes: " << dictionary.getRecolorings() << endl;
 
-        cout << "Palavras distintas: "
-             << dictionary.size()
-             << endl;
-
-        cout << "Tempo: "
-             << duration.count()
-             << " ms\n";
-
-        cout << "Comparacoes: "
-             << dictionary.getComparisons()
-             << endl;
-
-        cout << "Rotacoes: "
-             << dictionary.getRotations()
-             << endl;
-
-        cout << "Recoloracoes: "
-             << dictionary.getRecolorings()
-             << endl;
-
-        out
-            << "rbtree,"
-            << dictionary.size() << ","
-            << duration.count() << ","
-            << dictionary.getComparisons() << ","
-            << dictionary.getRotations() << ","
-            << dictionary.getRecolorings()
-            << "\n";
-
+        out << "rbtree," << dictionary.size() << "," << duration.count() << ","
+            << dictionary.getComparisons() << "," << dictionary.getRotations() << ","
+            << dictionary.getRecolorings() << "\n";
     }
 
-    // HASH ENCADEADA
-
-
+    // ==================================================
+    // 2. HASH ENCADEADA 
+    // ==================================================
     else if(structure == "chained")
     {
-        ChainedHashDictionary<
-            string,
-            int
-        > dictionary;
+        ChainedHashDictionary<string, int> dictionary;
 
-        auto start =
-            chrono::high_resolution_clock::now();
+        auto start = chrono::high_resolution_clock::now();
+        FrequencyCounter<ChainedHashDictionary<string, int>>::build(dictionary, words);
 
-        FrequencyCounter<
-            ChainedHashDictionary<
-                string,
-                int
-            >
-        >::build(
-            dictionary,
-            words);
+        // CHAMADA DO SEU EXPORTADOR: Tabelas Hash precisam ordenar (true)
+        CSVExporter<string, int>::exportVocabulary(dictionary, "vocabulario.csv", true);
 
-        vector<string> keys =
-            dictionary.getKeys();
+        auto end = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
 
-        for(const auto& key : keys) {
-            vocab
-                << key
-                << ","
-                << dictionary.get(key)
-                << "\n";
-        }
-
-        auto end =
-            chrono::high_resolution_clock::now();
-
-        auto duration =
-            chrono::duration_cast
-            <
-                chrono::milliseconds
-            >(end - start);
-
-        cout << "\nHash criada.\n";
-
+        cout << "\nHash Encadeada criada.\n";
         cout << "\n===== ESTATISTICAS HASH =====\n";
+        cout << "Palavras distintas: " << dictionary.size() << endl;
+        cout << "Tempo: " << duration.count() << " ms\n";
+        cout << "Comparacoes: " << dictionary.getComparisons() << endl;
+        cout << "Colisoes: " << dictionary.getCollisions() << endl;
+        cout << "Load Factor: " << dictionary.getLoadFactor() << endl;
+        cout << "Maior cadeia: " << dictionary.getLargestChain() << endl;
 
-        cout << "Palavras distintas: "
-             << dictionary.size()
-             << endl;
-
-        cout << "Tempo: "
-             << duration.count()
-             << " ms\n";
-
-        cout << "Comparacoes: "
-             << dictionary.getComparisons()
-             << endl;
-
-        cout << "Colisoes: "
-             << dictionary.getCollisions()
-             << endl;
-
-        cout << "Load Factor: "
-             << dictionary.getLoadFactor()
-             << endl;
-
-        cout << "Maior cadeia: "
-             << dictionary.getLargestChain()
-             << endl;
-
-        out
-            << "chained,"
-            << dictionary.size() << ","
-            << duration.count() << ","
-            << dictionary.getComparisons() << ","
-            << dictionary.getCollisions() << ","
-            << dictionary.getLoadFactor() << ","
-            << dictionary.getLargestChain()
-            << "\n";
-        
+        out << "chained," << dictionary.size() << "," << duration.count() << ","
+            << dictionary.getComparisons() << "," << dictionary.getCollisions() << ","
+            << dictionary.getLoadFactor() << "," << dictionary.getLargestChain() << "\n";
     }
 
+    // ==================================================
+    // 3. AVL
+    // ==================================================
+    else if(structure == "avl")
+    {
+        AVLDictionary<string, int> dictionary;
+
+        auto start = chrono::high_resolution_clock::now();
+        FrequencyCounter<AVLDictionary<string, int>>::build(dictionary, words);
+
+        // CHAMADA DO SEU EXPORTADOR: Árvores não precisam ordenar (false)
+        CSVExporter<string, int>::exportVocabulary(dictionary, "vocabulario.csv", false);
+
+        auto end = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+        cout << "\nAVL criada.\n";
+        cout << "\n===== ESTATISTICAS AVL =====\n";
+        cout << "Palavras distintas: " << dictionary.size() << endl;
+        cout << "Tempo: " << duration.count() << " ms\n";
+        cout << "Comparacoes: " << dictionary.getComparisons() << endl;
+        cout << "Rotacoes: " << dictionary.getRotations() << endl;
+
+        out << "avl," << dictionary.size() << "," << duration.count() << ","
+            << dictionary.getComparisons() << "," << dictionary.getRotations() << "\n";
+    }
+
+    // ==================================================
+    // 4. HASH ENDEREÇAMENTO ABERTO
+    // ==================================================
+    else if(structure == "open")
+    {
+        OpenAddressHashDictionary<string, int> dictionary;
+
+        auto start = chrono::high_resolution_clock::now();
+        FrequencyCounter<OpenAddressHashDictionary<string, int>>::build(dictionary, words);
+
+        // CHAMADA DO SEU EXPORTADOR: Tabelas Hash precisam ordenar (true)
+        CSVExporter<string, int>::exportVocabulary(dictionary, "vocabulario.csv", true);
+
+        auto end = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+
+       cout << "\nHash Enderecamento Aberto criada.\n";
+        cout << "\n===== ESTATISTICAS HASH ABERTA =====\n";
+        cout << "Palavras distintas: " << dictionary.size() << endl;
+        cout << "Tempo: " << duration.count() << " ms\n";
+        cout << "Comparacoes: " << dictionary.getComparisons() << endl;
+        cout << "Colisoes: " << dictionary.getCollisions() << endl;      // <-- LINHA NOVA
+        cout << "Load Factor: " << dictionary.getLoadFactor() << endl;    // <-- LINHA NOVA
+
+        // Atualizando o salvamento do results.csv adicionando os dois novos dados no final
+        out << "open," << dictionary.size() << "," << duration.count() << ","
+            << dictionary.getComparisons() << "," << dictionary.getCollisions() << "," 
+            << dictionary.getLoadFactor() << "\n";
+    }
     else
     {
         cout << "Estrutura invalida.\n";
@@ -245,5 +203,5 @@ int main(int argc, char* argv[])
     }
 
     out.close();
-
+    return 0;
 }
