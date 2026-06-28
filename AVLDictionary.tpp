@@ -24,7 +24,7 @@ int AVLDictionary<Key, Value>::balanceFactor(AVLNode<Key, Value>* node) const {
 
 // Nas rotações, eu faço a troca mecânica dos ponteiros.
 // O detalhe crucial aqui é manter os ponteiros 'parent' atualizados, 
-// pois minha implementação iterativa depende totalmente deles para subir na árvore.
+// pois minha implementação interativa depende totalmente deles para subir na árvore.
 template<typename Key, typename Value>
 void AVLDictionary<Key, Value>::rotateRight(AVLNode<Key, Value>* y) {
     AVLNode<Key, Value>* x = y->left;
@@ -67,7 +67,7 @@ void AVLDictionary<Key, Value>::rotateLeft(AVLNode<Key, Value>* x) {
     updateHeight(y);
 }
 
-// O coração do meu projeto: balanceamento Bottom-Up totalmente iterativo!
+// balanceamento bottom-Up totalmente iterativo
 // Em vez de recursão, eu uso um loop while que vai subindo pelos ponteiros 'parent'.
 template<typename Key, typename Value>
 void AVLDictionary<Key, Value>::balanceUp(AVLNode<Key, Value>* curr) {
@@ -256,7 +256,7 @@ Value& AVLDictionary<Key, Value>::operator[](const Key& key) {
     return findNode(key)->value;
 }
 
-// Limpeza da árvore estritamente iterativa para cumprir a exigência do PDF.
+// Limpeza da árvore estritamente iterativa
 // Utilizo um std::vector atuando como uma Pilha (Stack) manual.
 template<typename Key, typename Value>
 void AVLDictionary<Key, Value>::clear() {
@@ -279,7 +279,7 @@ void AVLDictionary<Key, Value>::clear() {
     m_size = 0;
 }
 
-// Percurso Em-Ordem (In-Order) também de forma puramente iterativa com Pilha.
+// Percurso Em-Ordem também de forma puramente iterativa com Pilha.
 // Isso garante que as chaves da minha árvore já saiam em ordem alfabética para o CSV.
 template<typename Key, typename Value>
 std::vector<Key> AVLDictionary<Key, Value>::getKeys() const {

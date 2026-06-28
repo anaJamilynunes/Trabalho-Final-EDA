@@ -35,7 +35,7 @@ size_t OpenAddressHashDictionary<Key, Value, Hash>::next_prime(size_t number) co
 
 // O Rehash é a minha válvula de escape. Se a tabela atingir o fator de carga 
 // máximo (ex: 70% cheia), eu dobro a capacidade (buscando o próximo primo) 
-// e reinsro todas as chaves válidas. Isso garante que a busca continue O(1).
+// e reinsro todas as chaves válidas. Isso garante que a busca continue.
 template<typename Key, typename Value, typename Hash>
 void OpenAddressHashDictionary<Key, Value, Hash>::rehash(size_t new_capacity) {
     std::vector<OpenAddressHashEntry<Key, Value>> old_table = m_table;
@@ -164,7 +164,7 @@ bool OpenAddressHashDictionary<Key, Value, Hash>::update(const Key& key, const V
     return false;
 }
 
-// Remoção Lógica (Lazy Deletion): Eu não limpo a variável de verdade, 
+// Eu não limpo a variável de verdade, 
 // apenas mudo o estado dela para DELETED. Isso evita que a sondagem 
 // linear quebre ao tentar buscar elementos que foram empurrados pra frente por colisões.
 template<typename Key, typename Value, typename Hash>

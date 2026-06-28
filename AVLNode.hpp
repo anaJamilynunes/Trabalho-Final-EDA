@@ -3,7 +3,6 @@
 
 // a inclusão do ponteiro 'parent'. 
 // É ele que me permite "subir" na árvore para verificar e aplicar rotações 
-// de forma estritamente iterativa
 template<typename Key, typename Value>
 struct AVLNode {
     Key key;

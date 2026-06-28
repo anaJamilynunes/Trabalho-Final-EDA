@@ -7,10 +7,7 @@
 #include <utility>
 #include "Dictionary.hpp"
 
-// =======================================================
-// OPÇÃO NUCLEAR: Colocamos os estados e o Struct diretamente aqui!
-// Assim o C++ é OBRIGADO a ler isso antes da Tabela Hash.
-// =======================================================
+
 enum OpenAddressState {
     EMPTY,
     OCCUPIED,
@@ -27,7 +24,9 @@ struct OpenAddressHashEntry {
 };
 // =======================================================
 
-// Agora a classe da Tabela Hash logo em seguida:
+
+// Implementação de um dicionário utilizando
+// tabela hash com endereçamento aberto e sondagem linear.
 template<typename Key, typename Value, typename Hash = std::hash<Key>>
 class OpenAddressHashDictionary : public Dictionary<Key, Value> {
 private:
@@ -38,9 +37,11 @@ private:
     float m_max_load_factor;
     Hash m_hash;
 
+    // Contador de comparações e colisoes
     mutable size_t m_comparisons;
     mutable size_t m_collisions;
 
+     // Declarações dos métodos privados
     size_t hash_code(const Key& key) const;
     float load_factor() const;
     bool is_prime(size_t number) const;
@@ -48,13 +49,16 @@ private:
     void rehash(size_t new_capacity);
 
 public:
+    //construtor
     OpenAddressHashDictionary(size_t capacity = 19, float max_load_factor = 0.7f);
 
+    // Métricas exigidas pelo projeto para a análise de desempenho
     size_t getComparisons() const;
     size_t getCollisions() const;
     float getLoadFactor() const;
     void resetMetrics();
 
+    // Declarações dos métodos herdados
     bool insert(const Key& key, const Value& value) override;
     bool update(const Key& key, const Value& value) override;
     bool remove(const Key& key) override;
@@ -68,6 +72,7 @@ public:
     std::vector<Key> getKeys() const override;
 };
 
+// Inclusão da implementação dos templates
 #include "OpenAddressHashDictionary.tpp"
 
 #endif
