@@ -8,6 +8,14 @@
 #include "RBNode.hpp"
 #include "Dictionary.hpp"
 
+/**
+ * RBTreeDictionary.hpp
+ * Dicionário baseado em Árvore Rubro-Negra (Red-Black Tree).
+ * Garante limite estrito de complexidade de tempo O(log n) para inserção, 
+ * remoção e busca através das operações automatizadas de rotação e recolorização.
+ * @author Ana Jamily
+ */
+
 template<typename Key, typename Value>
 class RBTreeDictionary :
     public Dictionary<Key, Value>

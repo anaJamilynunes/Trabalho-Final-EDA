@@ -7,6 +7,13 @@
 #include "Dictionary.hpp"
 #include "ChainHashNode.hpp"
 
+/**
+ * ChainedHashDictionary.hpp
+ * Interface do Dicionário baseado em Tabela Hash com Encadeamento Externo.
+ * Classe genérica que gerencia colisões armazenando elementos que mapeiam 
+ * para o mesmo índice em uma lista dinamicamente encadeada (Chaining).
+ */
+
 template<typename Key, typename Value>
 class ChainedHashDictionary :
     public Dictionary<Key, Value>

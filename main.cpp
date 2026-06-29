@@ -11,11 +11,11 @@
 // O SEU EXPORTADOR COMPONENTE DE AUTORIA DA NOEMI
 #include "CSVExporter.hpp"
 
-// Inclusão das estruturas da sua amiga
+// Inclusão das estruturas - jamily
 #include "rbtreeDictionary.hpp"
 #include "chainedHashDictionary.hpp"
 
-// Inclusão das SUAS estruturas
+// Inclusão das estruturas - noemi
 #include "AVLDictionary.hpp"
 #include "OpenAddressHashDictionary.hpp"
 
@@ -23,9 +23,9 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    // ==================================================
+
     // HELP
-    // ==================================================
+
     if(argc == 2)
     {
         string arg = argv[1];
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
             cout << "\nEstruturas disponiveis:\n";
             cout << "  rbtree  (Arvore Rubro-Negra)\n";
-            cout << "  chained (Hash de Encadeamento)\n";
+            cout << "  chained (Hash de Encadeamento Externo)\n";
             cout << "  avl     (Arvore AVL)\n";
             cout << "  open    (Hash Enderecamento Aberto)\n\n";
 
@@ -49,9 +49,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    // ==================================================
     // VALIDACAO DOS ARGUMENTOS
-    // ==================================================
+
     if(argc != 3)
     {
         cout << "\nNumero invalido de argumentos.\n";
@@ -63,9 +62,8 @@ int main(int argc, char* argv[])
     string structure = argv[1];
     string filename  = argv[2];
 
-    // ==================================================
     // EXTRAÇÃO DAS PALAVRAS
-    // ==================================================
+
     vector<string> words = TextProcessor::extractWords(filename);
 
     if(words.empty())
@@ -76,14 +74,13 @@ int main(int argc, char* argv[])
 
     cout << "\nTOTAL EXTRAIDO = " << words.size() << endl;
 
-    // ==================================================
+
     // ARQUIVO DE RESULTADOS GERAIS
-    // ==================================================
+
     ofstream out("results.csv", ios::app);
 
-    // ==================================================
     // 1. RBTREE
-    // ==================================================
+
     if(structure == "rbtree")
     {
         RBTreeDictionary<string, int> dictionary;
@@ -110,9 +107,8 @@ int main(int argc, char* argv[])
             << dictionary.getRecolorings() << "\n";
     }
 
-    // ==================================================
     // 2. HASH ENCADEADA 
-    // ==================================================
+
     else if(structure == "chained")
     {
         ChainedHashDictionary<string, int> dictionary;
@@ -140,9 +136,8 @@ int main(int argc, char* argv[])
             << dictionary.getLoadFactor() << "," << dictionary.getLargestChain() << "\n";
     }
 
-    // ==================================================
     // 3. AVL
-    // ==================================================
+
     else if(structure == "avl")
     {
         AVLDictionary<string, int> dictionary;
@@ -167,9 +162,8 @@ int main(int argc, char* argv[])
             << dictionary.getComparisons() << "," << dictionary.getRotations() << "\n";
     }
 
-    // ==================================================
     // 4. HASH ENDEREÇAMENTO ABERTO
-    // ==================================================
+
     else if(structure == "open")
     {
         OpenAddressHashDictionary<string, int> dictionary;

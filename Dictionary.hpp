@@ -6,7 +6,7 @@
 template<typename Key, typename Value>
 class Dictionary {
 public:
-
+ 
     virtual bool insert(
         const Key& key,
         const Value& value

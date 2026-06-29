@@ -4,6 +4,12 @@
 #include <cctype>
 #include <fstream>
 
+/**
+ * Identifica se um byte corresponde a um caractere alfabético.
+ * Aceita o intervalo ASCII padrão (A-Z, a-z) e estende a validação para 
+ * valores >= 128 para preservar caracteres acentuados (UTF-8 / Extended ASCII).
+ */
+
 //verifica se o caractere é uma letra válida
 //incluindo acentuação
 static bool isLetter(unsigned char c) {
@@ -64,7 +70,10 @@ bool TextProcessor::isSeparator(char c)
 }
 
 // CONVERTE PARA MINÚSCULAS
-
+/**
+ * Transforma caracteres ASCII maiúsculos em minúsculos.
+ * Realiza cast seguro para manipulação direta de bytes, afetando apenas a tabela ASCII base.
+ */
 std::string
 TextProcessor::normalizeWord(
     std::string word)
@@ -83,7 +92,10 @@ TextProcessor::normalizeWord(
 }
 
 // VERIFICA SE A PALAVRA É VÁLIDA
-//ou seja, a palavra deve ter pelo menos uma letra
+/**
+ * Valida se o token extraído contém ao menos um caractere legível.
+ * Evita que strings compostas unicamente por símbolos órfãos entrem no dicionário.
+ */
 static bool isValidWord(
     const std::string& word) {
     for(unsigned char c : word) {
@@ -96,7 +108,11 @@ static bool isValidWord(
 }
 
 // EXTRAÇÃO DAS PALAVRAS
-
+/**
+ * Processa o arquivo texto, tokenizando e isolando palavras limpas.
+ * Implementa uma máquina de estados simples via leitura de fluxo de caracteres.
+ * Trata hífens de forma especial para preservar palavras compostas (ex: "guarda-chuva").
+ */
 std::vector<std::string>
 TextProcessor::extractWords(
     const std::string& filename)
@@ -153,9 +169,7 @@ TextProcessor::extractWords(
         current += c;
     }
 
-    // última palavra no current 
-    //sem encontrar um separador final
-    //aplicar processo para normalizar
+    // Interceptação de resíduos ao atingir o EOF (Fim de Arquivo) sem delimitador final
     if(!current.empty())
     {
         current =

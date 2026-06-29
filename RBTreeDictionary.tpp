@@ -3,7 +3,6 @@
 #include <stack>
 #include <iostream>
 
-
 template<typename Key, typename Value>
 RBTreeDictionary<Key, Value>::RBTreeDictionary()
 {
@@ -264,7 +263,7 @@ RBTreeDictionary<Key, Value>::minimum(
     RBNode<Key, Value>* node
 ) const
 {  //para encontrar e definir o sucessor no balancemanto após a remoção
-    //menor elemento mais a esq da arv dir
+    //menor elemento mais a esq
     while(node->left != NIL) {
         node = node->left;
     }

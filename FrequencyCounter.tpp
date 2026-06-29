@@ -2,6 +2,11 @@
 #define FREQUENCYCOUNTER_TPP
 
 #include "FrequencyCounter.hpp"
+/**
+ * Implementação do construtor de mapa de frequências utilizando herança paramétrica (Templates).
+ * Varre a coleção de palavras injetando-as na estrutura de dados escolhida em tempo de compilação.
+ * Incrementa colisões de chaves existentes ou inicia a base unitária para novos termos.
+ */
 
 template<class DictionaryType>
 void FrequencyCounter<DictionaryType>::build(

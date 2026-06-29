@@ -5,6 +5,13 @@
 #include <vector>
 #include "ChainHashNode.hpp"
 
+/**
+ * Função de dispersão (Hash).
+ * Mapeia uma chave genérica para um índice válido do vetor utilizando o 
+ * functor padrão std::hash combinado com a operação de módulo sobre a capacidade atual.
+ * Complexidade de Tempo: O(1).
+ */
+
 //irá transforma uma chave em uma posição válida da tabela.
 template<typename Key, typename Value>
 size_t ChainedHashDictionary<Key, Value>::hash(
